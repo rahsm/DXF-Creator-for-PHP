@@ -2,3 +2,4 @@ test
 .idea
 vendor/
 *.lock
+.vscode-upload.json
