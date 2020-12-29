@@ -141,13 +141,15 @@ class Creator
      * @param string $name
      * @param int $color Color code (@see adamasantares\dxf\Color class)
      * @param string $lineType Line type (@see adamasantares\dxf\LineType class)
+     * @param int $width The width of the layer
      * @return Creator Instance
      */
-    public function addLayer($name, $color = Color::GRAY, $lineType = LineType::SOLID)
+    public function addLayer($name, $color = Color::GRAY, $lineType = LineType::SOLID, $width = 0)
     {
         $this->layers[$name] = [
             'color' => $color,
-            'lineType' => $lineType
+            'lineType' => $lineType,
+            'width' => $width
         ];
         $this->lTypes[$lineType] = $lineType;
         return $this;
@@ -159,12 +161,13 @@ class Creator
      * @param $name
      * @param int $color  (optional) Color code. Only for new layer (@see adamasantares\dxf\Color class)
      * @param string $lineType (optional) Only for new layer
+     * @param int $width The width of the layer
      * @return Creator Instance
      */
-    public function setLayer($name, $color = Color::GRAY, $lineType = LineType::SOLID)
+    public function setLayer($name, $color = Color::GRAY, $lineType = LineType::SOLID, $width = 0)
     {
         if (!isset($this->layers[$name])) {
-            $this->addLayer($name, $color, $lineType);
+            $this->addLayer($name, $color, $lineType, $width);
         }
         $this->layerName = $name;
         return $this;
@@ -783,6 +786,66 @@ class Creator
         return $this;
     }
 
+        /**
+     * Add a solid to the current layout
+     * @param float $x
+     * @param float $y
+     * @param float $z
+     * @param float $w
+     * @param float $h
+     * @return Creator $this
+     * @see http://help.autodesk.com/view/ACD/2016/ENU/?guid=GUID-E0C5F04E-D0C5-48F5-AC09-32733E8848F2
+     */
+    public function addSquareSolid($x, $y, $z = 0.0, $w = 0.0, $h = 0.0)
+    {
+        $y1 = $y + $h;
+        $x1 = $x + $w;
+        $this->shapes[] = "SOLID\n" .
+            "5\n" . // Entity Handle
+            "{number}\n" .
+            "100\n" . // Subclass marker (AcDbEntity)
+            "AcDbEntity\n" .
+            "8\n" . // Layer name
+            "{$this->layerName}\n" .
+            "100\n" . // Subclass marker (AcDbTrace)
+            "AcDbTrace\n" .
+            "10\n" . // First corner, X
+            "{$x}\n" .
+            "20\n" . // First corner, Y
+            "{$y}\n" .
+            "30\n" . // First corner, Z
+            "{$z}\n" .
+            "11\n" . // Second corner, X
+            "{$x}\n" .
+            "21\n" . // Second corner, Y
+            "{$y1}\n" .
+            "31\n" . // Second corner, Z
+            "{$z}\n" .
+            "12\n" . // Third corner, X
+            "{$x1}\n" .
+            "22\n" . // Third corner, Y
+            "{$y}\n" .
+            "32\n" . // Third corner, Z
+            "{$z}\n" .
+            "13\n" . // Fourth corner, X
+            "{$x1}\n" .
+            "23\n" . // Fourth corner, Y
+            "{$y1}\n" .
+            "33\n" . // Fourth corner, Z
+            "{$z}\n" .
+            "39\n" . // Thickness
+            "0\n" .
+            "210\n" . // Extrusion Direction, X
+            "0\n" .
+            "220\n" . // Extrusion Direction, Y
+            "0\n" .
+            "230\n" . // Extrusion Direction, Z
+            "1\n" .
+            "0\n";
+        return $this;
+    }
+
+
 
     /**
      * Add 3D polyline to current layer.
@@ -1239,6 +1302,8 @@ class Creator
                     "{$layer['color']}\n" .
                     "6\n" . // Linetype name
                     "{$layer['lineType']}\n" .
+                    "370\n" .
+                    "{$layer['width']}\n" .
                     "390\n" .
                     "F\n" .
                     "0\n";
