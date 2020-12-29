@@ -1,14 +1,24 @@
 {
-	"name": "adamasantares/dxf",
+	"name": "rah/dxf",
 	"description": "A simple DXF creator for PHP",
 	"keywords": ["php", "dxf"],
-	"homepage": "https://github.com/active-programming/DXF-Creator-for-PHP#readme",
+	"homepage": "https://github.com/rahsm/DXF-Creator-for-PHP",
 	"type": "library",
 	"license": "MIT",
 	"authors": [
 		{
 			"name": "Konstantin Kutsevalov",
 			"email": "konstantin@kutsevalov.name"
+		},
+		{
+			"name": "Jean Gabriel Greco"
+		},
+		{
+			"name": "Mario Fèvre"
+		},
+		{
+			"name": "Stefan Moises",
+			"email": "stefan@rent-a-hero.de"
 		}
 	],
 	"require": {
